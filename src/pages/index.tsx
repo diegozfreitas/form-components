@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Select } from "../components";
+import { Input, Select } from "../components";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const data = [
@@ -23,10 +23,16 @@ const Page = () => {
     //resolver: yupResolver({}),
   });
 
+  const handleOnSubmit = async (form) => {
+    console.log("eee", form);
+  };
+
   return (
     <div>
-      <input type="text" name="name" placeholder="Nome..." />
+      <Input control={control} name="name" placeholder="Nome..." isFirst />
       <Select control={control} options={data} name="select" />
+
+      <button onClick={handleSubmit(handleOnSubmit)}>Enviar</button>
     </div>
   );
 };
