@@ -8,6 +8,7 @@ type InputProps = {
   placeholder?: string;
   control: any;
   isFirst?: boolean;
+  tabIndex: number
 };
 
 export const Input: React.FC<InputProps> = ({
@@ -17,6 +18,7 @@ export const Input: React.FC<InputProps> = ({
   placeholder,
   control,
   isFirst,
+  tabIndex
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,6 +38,7 @@ export const Input: React.FC<InputProps> = ({
           <input
             {...field}
             id={name}
+            tabIndex={tabIndex}
             type={type}
             ref={inputRef}
             placeholder={placeholder}

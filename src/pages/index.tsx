@@ -29,8 +29,9 @@ const Page = () => {
 
   return (
     <div>
-      <Input control={control} name="name" placeholder="Nome..." isFirst />
-      <Select control={control} options={data} name="select" />
+      <Input control={control} name="name" placeholder="Nome..." isFirst tabIndex={1}/>
+      <Select control={control} options={data} name="select"tabIndex={2} />
+      <Input control={control} name="age" placeholder="Idade..." tabIndex={3}/>
 
       <button onClick={handleSubmit(handleOnSubmit)}>Enviar</button>
     </div>

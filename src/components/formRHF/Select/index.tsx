@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Controller } from "react-hook-form";
 
 type Option = {
@@ -11,8 +11,8 @@ type SelectProps = {
   name: string;
   options: Option[];
   placeholder?: string;
-  isFilterable?: boolean;
   control: any;
+  tabIndex: number;
 };
 
 export const Select: React.FC<SelectProps> = ({
@@ -20,11 +20,12 @@ export const Select: React.FC<SelectProps> = ({
   options,
   placeholder = "Selecione...",
   control,
+  tabIndex,
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  const [inputValue, setInputValue] = useState("");
+
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
 
   const handleSelectOption = (option: Option) => {
@@ -36,7 +37,6 @@ export const Select: React.FC<SelectProps> = ({
     setSelectedOption(null);
     setSearchValue("");
     setInputValue("");
-    inputRef.current?.focus();
   };
 
   const filterOptions = (options: Option[]) => {
@@ -56,33 +56,38 @@ export const Select: React.FC<SelectProps> = ({
       control={control}
       defaultValue={selectedOption ? selectedOption.value : ""}
       render={({ field }) => (
-        <div className={`select-container ${isOpen ? "open" : ""}`}>
-          <div
-            className={`selected-option ${
-              selectedOption ? "" : "placeholder"
-            } ${isOpen ? "focused" : ""}`}
-            onClick={() => setIsOpen(true)}
-          >
-            <input
-              onFocus={() => setIsOpen(true)}
-              onBlur={() => setIsOpen(false)}
-              ref={inputRef}
-              placeholder={placeholder + "ss"}
-              value={
-                selectedOption !== null ? selectedOption.label : inputValue
-              }
-              onChange={(e) => {
-                setSearchValue(e.target.value);
-                setInputValue(e.target.value);
-              }}
-            />
-            {selectedOption && (
-              <span
-                onClick={handleClearSelection}
-                style={{ cursor: "pointer" }}
-              >
-                X
-              </span>
+        <div>
+          <div onClick={() => setIsOpen(true)}>
+            {selectedOption ? (
+              <>
+                <input
+                  tabIndex={tabIndex}
+                  onFocus={() => {
+                    setIsOpen(true)
+                    setSelectedOption(null);
+                  }}
+                  type="text"
+                  value={selectedOption.label}
+                />
+                <span
+                  style={{ cursor: "pointer" }}
+                  onClick={handleClearSelection}
+                >
+                  X
+                </span>
+              </>
+            ) : (
+              <input
+                tabIndex={tabIndex}
+                onFocus={() => setIsOpen(true)}
+                type="text"
+                value={inputValue}
+                placeholder={placeholder ? placeholder : "Pesquisar..."}
+                onChange={(e) => {
+                  setSearchValue(e.target.value);
+                  setInputValue(e.target.value);
+                }}
+              />
             )}
           </div>
           {isOpen && (
@@ -90,19 +95,20 @@ export const Select: React.FC<SelectProps> = ({
               {filteredOptions.map((option) => (
                 <div
                   key={option.value}
-                  style={{ cursor: "pointer" }}
-                  className={`option ${
-                    selectedOption?.value === option.value ? "selected" : ""
-                  } ${option.disabled ? "disabled" : ""}`}
+                  style={{
+                    cursor: "pointer",
+                    borderWidth: 1,
+                    borderStyle: "solid",
+                    borderColor: "green",
+                    margin: 5,
+                  }}
                   onClick={() => {
-                    if (!option.disabled) {
-                      handleSelectOption(option);
-                      field.onChange(option.value);
-                    }
+                    handleSelectOption(option);
+                    field.onChange(option.value);
                   }}
                 >
                   {selectedOption?.value === option.value
-                    ? option.label + "*"
+                    ? option.label
                     : option.label}
                 </div>
               ))}
