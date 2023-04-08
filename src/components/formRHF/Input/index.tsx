@@ -8,7 +8,7 @@ type InputProps = {
   placeholder?: string;
   control: any;
   isFirst?: boolean;
-  tabIndex: number
+  error?: any;
 };
 
 export const Input: React.FC<InputProps> = ({
@@ -18,33 +18,21 @@ export const Input: React.FC<InputProps> = ({
   placeholder,
   control,
   isFirst,
-  tabIndex
+  error,
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isFirst) {
-      inputRef.current?.focus();
-    }
-  }, []);
-
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field }) => (
-        <div>
-          {label && <label htmlFor={name}>{label}</label>}
-          <input
-            {...field}
-            id={name}
-            tabIndex={tabIndex}
-            type={type}
-            ref={inputRef}
-            placeholder={placeholder}
-          />
-        </div>
-      )}
-    />
+    <>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => (
+          <div>
+            {label && <label htmlFor={name}>{label}</label>}
+            <input {...field} id={name} type={type} placeholder={placeholder} />
+          </div>
+        )}
+      />
+      {error && <span style={{ color: "red" }}>{error}</span>}
+    </>
   );
 };
