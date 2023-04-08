@@ -12,7 +12,7 @@ type SelectProps = {
   options: Option[];
   placeholder?: string;
   control: any;
-  tabIndex: number;
+  error?: any;
 };
 
 export const Select: React.FC<SelectProps> = ({
@@ -20,7 +20,7 @@ export const Select: React.FC<SelectProps> = ({
   options,
   placeholder = "Selecione...",
   control,
-  tabIndex,
+  error,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -51,74 +51,75 @@ export const Select: React.FC<SelectProps> = ({
   const filteredOptions = filterOptions(options);
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue={selectedOption ? selectedOption.value : ""}
-      render={({ field }) => (
-        <div>
-          <div onClick={() => setIsOpen(true)}>
-            {selectedOption ? (
-              <>
+    <>
+      <Controller
+        name={name}
+        control={control}
+        defaultValue={selectedOption ? selectedOption.value : ""}
+        render={({ field }) => (
+          <div>
+            <div onClick={() => setIsOpen(true)}>
+              {selectedOption ? (
+                <>
+                  <input
+                    onFocus={() => {
+                      setIsOpen(true);
+                      setSelectedOption(null);
+                    }}
+                    type="text"
+                    value={selectedOption.label}
+                  />
+                  <span
+                    style={{ cursor: "pointer" }}
+                    onClick={handleClearSelection}
+                  >
+                    X
+                  </span>
+                </>
+              ) : (
                 <input
-                  tabIndex={tabIndex}
-                  onFocus={() => {
-                    setIsOpen(true)
-                    setSelectedOption(null);
-                  }}
+                  onFocus={() => setIsOpen(true)}
                   type="text"
-                  value={selectedOption.label}
+                  value={inputValue}
+                  placeholder={placeholder ? placeholder : "Pesquisar..."}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    setInputValue(e.target.value);
+                  }}
                 />
-                <span
-                  style={{ cursor: "pointer" }}
-                  onClick={handleClearSelection}
-                >
-                  X
-                </span>
-              </>
-            ) : (
-              <input
-                tabIndex={tabIndex}
-                onFocus={() => setIsOpen(true)}
-                type="text"
-                value={inputValue}
-                placeholder={placeholder ? placeholder : "Pesquisar..."}
-                onChange={(e) => {
-                  setSearchValue(e.target.value);
-                  setInputValue(e.target.value);
-                }}
-              />
-            )}
-          </div>
-          {isOpen && (
-            <div className="options-container">
-              {filteredOptions.map((option) => (
-                <div
-                  key={option.value}
-                  style={{
-                    cursor: "pointer",
-                    borderWidth: 1,
-                    borderStyle: "solid",
-                    borderColor: "green",
-                    margin: 5,
-                  }}
-                  onClick={() => {
-                    handleSelectOption(option);
-                    field.onChange(option.value);
-                  }}
-                >
-                  {selectedOption?.value === option.value
-                    ? option.label
-                    : option.label}
-                </div>
-              ))}
-              {filteredOptions.length === 0 && (
-                <div className="no-results">Nenhum resultado encontrado</div>
               )}
             </div>
-          )}
-        </div>
-      )}
-    />
+            {isOpen && (
+              <div className="options-container">
+                {filteredOptions.map((option) => (
+                  <div
+                    key={option.value}
+                    style={{
+                      cursor: "pointer",
+                      borderWidth: 1,
+                      borderStyle: "solid",
+                      borderColor: "green",
+                      margin: 5,
+                    }}
+                    onClick={() => {
+                      handleSelectOption(option);
+                      field.onChange(option.value);
+                    }}
+                  >
+                    {selectedOption?.value === option.value
+                      ? option.label
+                      : option.label}
+                  </div>
+                ))}
+                {filteredOptions.length === 0 && (
+                  <div className="no-results">Nenhum resultado encontrado</div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      />
+      {error && <span style={{ color: "red" }}>{error}</span>}
+    </>
   );
 };
