@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form";
-import { Input, Select } from "../components";
+import { Input, InputNumber, Select, Radio } from "../components";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { ValidationsSchema } from "./validationForm";
 
-const data = [
+const dataSelect = [
   {
     value: "1",
     label: "Um",
@@ -13,6 +14,12 @@ const data = [
   },
 ];
 
+const dataGenders = [
+  { label: "Masculino", value: "male" },
+  { label: "Feminino", value: "female" },
+  { label: "Outro", value: "other" },
+];
+
 const Page = () => {
   const {
     control,
@@ -20,8 +27,10 @@ const Page = () => {
     formState: { errors },
     reset,
   } = useForm({
-    //resolver: yupResolver({}),
+    resolver: yupResolver(ValidationsSchema),
   });
+
+  // console.log("eee", "errors", errors);
 
   const handleOnSubmit = async (form) => {
     console.log("eee", form);
@@ -29,9 +38,31 @@ const Page = () => {
 
   return (
     <div>
-      <Input control={control} name="name" placeholder="Nome..." isFirst tabIndex={1}/>
-      <Select control={control} options={data} name="select"tabIndex={2} />
-      <Input control={control} name="age" placeholder="Idade..." tabIndex={3}/>
+      <Input
+        control={control}
+        name="name"
+        placeholder="Nome..."
+        error={errors?.name && errors?.name?.message}
+      />
+      <Select
+        control={control}
+        options={dataSelect}
+        name="select"
+        error={errors?.select && errors?.select?.message}
+      />
+      <InputNumber
+        control={control}
+        name="age"
+        placeholder="Idade..."
+        error={errors?.age && errors?.age?.message}
+      />
+      <Radio
+        name="gender"
+        label="Gênero"
+        options={dataGenders}
+        control={control}
+        error={errors?.gender && errors?.gender?.message}
+      />
 
       <button onClick={handleSubmit(handleOnSubmit)}>Enviar</button>
     </div>
