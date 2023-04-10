@@ -51,15 +51,21 @@ export const Select: React.FC<SelectProps> = ({
   const filteredOptions = filterOptions(options);
 
   useEffect(() => {
-    console.log("eee", "control", control._fields[name]?._f?.value);
+    const CheckValue = setInterval(() => {
+      const value = control?._fields[name]?._f?.value;
 
-    if (control._fields[name]) return;
-    const value = control._fields[name]._f.value;
+      console.log("eee", "passei aqui");
 
-    if (value !== "") {
-      setSearchValue(options.find((item) => item.value === value)?.label);
-      setSelectedOption(options.find((item) => item.value === value));
-    }
+      if (value !== "") {
+        setSearchValue(options.find((item) => item.value === value)?.label);
+        setSelectedOption(options.find((item) => item.value === value));
+        clearInterval(CheckValue);
+      }
+    }, 900);
+
+    setTimeout(() => {
+      clearInterval(CheckValue);
+    }, 3000);
   }, [control]);
 
   return (
