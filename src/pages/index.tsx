@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Input, InputNumber, Select, Radio } from "../components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ValidationsSchema } from "./validationForm";
+import { useEffect } from "react";
 
 const dataSelect = [
   {
@@ -30,7 +31,14 @@ const Page = () => {
     resolver: yupResolver(ValidationsSchema),
   });
 
-  // console.log("eee", "errors", errors);
+  useEffect(()=>{
+    reset({
+      name: 'diego',
+      select: '1',
+      age: '51',
+      gender: ['other'],
+    })
+  },[])
 
   const handleOnSubmit = async (form) => {
     console.log("eee", form);
