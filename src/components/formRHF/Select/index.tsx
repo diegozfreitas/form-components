@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
 type Option = {
@@ -49,6 +49,18 @@ export const Select: React.FC<SelectProps> = ({
   };
 
   const filteredOptions = filterOptions(options);
+
+  useEffect(() => {
+    console.log("eee", "control", control._fields[name]?._f?.value);
+
+    if (control._fields[name]) return;
+    const value = control._fields[name]._f.value;
+
+    if (value !== "") {
+      setSearchValue(options.find((item) => item.value === value)?.label);
+      setSelectedOption(options.find((item) => item.value === value));
+    }
+  }, [control]);
 
   return (
     <>
